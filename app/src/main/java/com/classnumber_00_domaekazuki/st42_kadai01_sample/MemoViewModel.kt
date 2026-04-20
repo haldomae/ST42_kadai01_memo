@@ -19,35 +19,21 @@ data class MemoDataUiState(
 
 class MemoViewModel: ViewModel() {
     // _countはViewModel内部だけ変更できる
-    private val _uiState = MutableStateFlow(
-        MemoDataUiState()
-    )
+    private val _count = MutableStateFlow(0)
     // Composeから読み取り専用
-    val uiState : StateFlow<MemoDataUiState> = _uiState.asStateFlow()
+    val count : StateFlow<Int> = _count.asStateFlow()
 
     // 数値増やす処理(ボタンを押した時など)
     fun increment(){
-        _uiState.value = _uiState.value.copy(
-            memoCount = _uiState.value.memoCount + 1
-        )
+        _count.value++
     }
 }
 
 @Composable
 fun CounterScreenViewModel(
     viewModel: MemoViewModel = viewModel()){
-    val uiState by viewModel.uiState.collectAsState()
-
-    // フラグの参照
-    if(uiState.isLoading){
-        // ロード処理
-    }
-
-    // エラーメッセージの参照
-    uiState.errorMessage?.let{ message ->
-        Text(text = message)
-    }
-
+    // countの値が変わるとComposeが再描画される
+    val count = viewModel.count.collectAsState()
     Column {
         Text("データが保持されている: ${count.value}")
         Button(onClick = {viewModel.increment()}) {

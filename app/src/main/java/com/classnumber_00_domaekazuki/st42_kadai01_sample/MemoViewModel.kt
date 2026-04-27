@@ -17,6 +17,7 @@ data class MemoDataUiState(
     val errorMessage: String? = null
 )
 
+
 class MemoViewModel: ViewModel() {
     // _countはViewModel内部だけ変更できる
     private val _count = MutableStateFlow(0)

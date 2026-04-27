@@ -17,6 +17,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.classnumber_00_domaekazuki.st42_kadai01_sample.ui.theme.ST42_kadai01_sampleTheme
 
 class MainActivity : ComponentActivity() {
@@ -27,7 +30,8 @@ class MainActivity : ComponentActivity() {
             ST42_kadai01_sampleTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 //                    CounterScreen()
-                    CounterScreenViewModel()
+//                    CounterScreenViewModel()
+                    AppNavigation()
                 }
             }
         }
@@ -49,6 +53,39 @@ fun CounterScreen(){
             onClick = {count++}
         ) {
             Text("+1")
+        }
+    }
+}
+
+@Composable
+fun AppNavigation(){
+    // NaVControllerを作成
+    // 画面遷移を命令する
+    val navController = rememberNavController()
+
+    // NavHostで画面とRouteを紐づける
+    NavHost(
+        // ナビコントローラー
+        navController = navController,
+        // 最初に表示する画面
+        startDestination = "home"
+    ){
+        // 各画面を用意
+        composable("home") {
+            HomeScreen(
+                onNavigateToAdd = {
+                    // 指定した画面に進む
+                    navController.navigate("add")
+                }
+            )
+        }
+        composable("add") {
+            AddScreen(
+                onNavigateBack = {
+                    // 画面戻る
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }

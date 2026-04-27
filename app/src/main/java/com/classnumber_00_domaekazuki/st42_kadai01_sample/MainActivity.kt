@@ -17,9 +17,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.classnumber_00_domaekazuki.st42_kadai01_sample.ui.theme.ST42_kadai01_sampleTheme
 
 class MainActivity : ComponentActivity() {
@@ -68,23 +70,36 @@ fun AppNavigation(){
         // ナビコントローラー
         navController = navController,
         // 最初に表示する画面
-        startDestination = "home"
+        startDestination = Screen.Home.route
     ){
         // 各画面を用意
-        composable("home") {
+        composable(Screen.Home.route) {
             HomeScreen(
-                onNavigateToAdd = {
-                    // 指定した画面に進む
-                    navController.navigate("add")
+                onNavigateToAdd={
+                    navController.navigate(Screen.Add.route)
                 }
             )
         }
-        composable("add") {
+        composable(Screen.Add.route) {
             AddScreen(
                 onNavigateBack = {
                     // 画面戻る
                     navController.popBackStack()
                 }
+            )
+        }
+        composable(
+            Screen.Detail.route,
+            arguments = listOf(
+                navArgument("taskId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { navBackStackEntry ->
+            val taskId = navBackStackEntry.arguments?.getInt("taskId")
+            DetailScreen(
+                taskId = taskId,
+                onNavigateBack = { navController.popBackStack() }
             )
         }
     }
